@@ -8,7 +8,9 @@
   let returnFocus = null;
   let timer = null;
   let featuredIndex = 0;
+  let featureTransitionTimer = null;
   const featured = [0, 6, 1, 8].map(n => projects[n]).filter(Boolean);
+  featured.forEach(project => { const image = new Image(); image.src = project.cover; });
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const safeText = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeLink = href => {
@@ -82,18 +84,31 @@
     if (card) openProject(card.dataset.id);
   });
 
-  function renderFeature() {
+  function renderFeature(immediate = false) {
     if (!featured.length) return;
     const p = featured[featuredIndex];
     const img = $('hero-feature-image');
-    img.classList.remove('image-failed');
-    img.src = p.cover;
-    img.alt = p.name + ' VR 專案封面';
-    $('hero-feature-region').textContent = p.location.replace(' | ', ' · ');
-    $('hero-feature-title').textContent = p.name;
-    $('feature-index').textContent = `${String(featuredIndex+1).padStart(2,'0')} / ${String(featured.length).padStart(2,'0')}`;
-    $('hero-feature-link').setAttribute('aria-label', `查看 ${p.name} VR 專案`);
-    $('hero-feature-link').dataset.id = p.id;
+    const wrap = $('hero-feature-wrap');
+    const applyContent = () => {
+      img.classList.remove('image-failed');
+      img.src = p.cover;
+      img.alt = p.name + ' VR 專案封面';
+      $('hero-feature-region').textContent = p.location.replace(' | ', ' · ');
+      $('hero-feature-title').textContent = p.name;
+      $('feature-index').textContent = `${String(featuredIndex+1).padStart(2,'0')} / ${String(featured.length).padStart(2,'0')}`;
+      $('hero-feature-link').setAttribute('aria-label', `查看 ${p.name} VR 專案`);
+      $('hero-feature-link').dataset.id = p.id;
+      requestAnimationFrame(() => wrap.classList.remove('is-transitioning'));
+    };
+    if (featureTransitionTimer) clearTimeout(featureTransitionTimer);
+    wrap.classList.add('is-ready');
+    if (immediate || reduceMotion) {
+      wrap.classList.remove('is-transitioning');
+      applyContent();
+      return;
+    }
+    wrap.classList.add('is-transitioning');
+    featureTransitionTimer = window.setTimeout(applyContent, 180);
   }
   function moveFeature(n) { featuredIndex = (featuredIndex+n+featured.length)%featured.length; renderFeature(); resetFeatureTimer(); }
   function resetFeatureTimer() { if (timer) clearInterval(timer); timer = null; if(!reduceMotion && featured.length>1 && !document.hidden && !$('project-modal').hidden) return; if (!reduceMotion && featured.length>1 && !document.hidden) timer = setInterval(() => {featuredIndex=(featuredIndex+1)%featured.length;renderFeature();},8000); }
@@ -101,7 +116,7 @@
   $('feature-next').addEventListener('click',()=>moveFeature(1));
   $('hero-feature-link').addEventListener('click',event=>{event.preventDefault();openProject(event.currentTarget.dataset.id);});
   document.addEventListener('visibilitychange', resetFeatureTimer);
-  renderFeature(); resetFeatureTimer();
+  renderFeature(true); resetFeatureTimer();
 
   const modal = $('project-modal');
   const panel = modal.querySelector('.modal-panel');
