@@ -243,9 +243,6 @@
     const main=safeLink(p.links[0]?.url || p.vr || '');
     $('modal-main-link').href=main || '#work';
     $('modal-main-link').hidden=!main;
-    const book=safeLink(p.booking);
-    $('modal-book').href=book || '#work';
-    $('modal-book').hidden=!book;
     modal.hidden=false;
     modal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
