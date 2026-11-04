@@ -13,6 +13,10 @@ function leaveTour(){if(!immersive)return;sendMap({type:'map-pause'});immersive=
 function alignMap(){if(enterTour())return;const header=document.querySelector('.site-header');const target=mapFrame.getBoundingClientRect().top+window.scrollY-header.getBoundingClientRect().height;window.scrollTo({top:Math.max(0,target),behavior:'instant'});scheduleViewport();}
 let pendingTheme=null;function sendTheme(theme){pendingTheme=theme;sendMap({type:'map-theme',theme});}
 mapFrame.addEventListener('load',()=>{updateMapViewport();if(pendingTheme){sendMap({type:'map-theme',theme:pendingTheme});pendingTheme=null}});
-document.querySelectorAll('a[href="#cityMap"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();alignMap();const card=a.closest('.life-grid article');const i=card?[...card.parentElement.children].indexOf(card):-1;sendTheme(i>=0?['park','transit','food'][i]:'all')}));
+document.querySelectorAll('a[href="#cityMap"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();alignMap();const card=a.closest('.life-grid article');const i=card?[...card.parentElement.children].indexOf(card):-1;sendTheme(a.dataset.theme||(i>=0?['park','transit','food'][i]:'all'))}));
 exitTour.addEventListener('click',leaveTour);addEventListener('keydown',e=>{if(e.key==='Escape'&&immersive)leaveTour()});addEventListener('scroll',scheduleViewport,{passive:true});addEventListener('resize',()=>{if(innerWidth>=900&&immersive)leaveTour();fitTour()});window.visualViewport?.addEventListener('resize',fitTour);
 addEventListener('message',e=>{if(e.source!==mapFrame.contentWindow||e.origin!==location.origin)return;if(e.data?.type==='map-align')alignMap();if(e.data?.type==='map-exit')leaveTour()});updateMapViewport();
+
+// Editorial story transitions: content remains visible without animation support.
+const revealItems=document.querySelectorAll('.reveal');
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}},{threshold:.1});for(const item of revealItems){item.classList.add('will-reveal');observer.observe(item)}}

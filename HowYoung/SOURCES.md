@@ -73,3 +73,5 @@ https://newhouse.591.com.tw/142407/detail
 
 
 2026-11-04 版面修訂：新增50嵐自由曾子店照片；來源與原圖詳見data/photo-sources.json。網頁新增sources.html可直接檢視來源。
+
+V10 市場照片：高雄畫刊〈達人帶你逛！自由黃昏市場採買燃起主婦魂〉，攝影／李瑰嫻。https://takao.kcg.gov.tw/article/1198

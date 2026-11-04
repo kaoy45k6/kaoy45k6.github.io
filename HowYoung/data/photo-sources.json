@@ -43,9 +43,10 @@
   },
   {
     "key": "自由黃昏",
-    "file": "assets/photos/market.webp",
-    "source": "https://mindtrip.ai/attraction/zuoying-taiwan/ziyou-traditional-market/at-RjzYLoKv",
-    "original": "https://d3fphkxyf5o5bm.cloudfront.net/image-resize/format%3Dwebp%2Cw%3D1200/1DB1XKToaIqwFxOOQ9iQRypbnJ98Bkzq"
+    "file": "assets/photos/market-editorial.jpg",
+    "source": "https://takao.kcg.gov.tw/article/1198",
+    "original": "https://takao-aws.hmgcdn.com/files/article/a0/1198/atl_1198_20240423092956_353.jpg",
+    "note": "自由黃昏市場熟食攤；高雄畫刊，攝影／李瑰嫻。"
   },
   {
     "id": "node/2402169643",
